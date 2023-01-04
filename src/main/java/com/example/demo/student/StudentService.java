@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.stereotype.Service;
 
 /*
@@ -24,12 +26,30 @@ public class StudentService {
     }
 
     public List<Student> getStudents() {
-        return List.of(new Student(
-                1L,
-                "guilherme",
-                "guilherme@gmail.com",
-                20,
-                LocalDate.of(2002, Month.FEBRUARY, 15)));
+        return studentRepository.findAll();
+    }
+    
+    public void addNewStudant(Student student){
+        
+        Optional<Student> studentEmail = studentRepository.findStudentByEmail(student.getEmail());
+        
+        // verifying if the email is in the body request
+        // any new request out of the list in repository, is give this way
+        if(studentEmail.isPresent()){
+            // search in database if it has an email equals of the body request 
+            throw new IllegalStateException("email already exist");
+        }
+        studentRepository.save(student);
+    }
+
+    public void deleteStudent(Long idLong){
+        boolean verifyingidStudent = studentRepository.existsById(idLong);
+
+        if(verifyingidStudent) {
+            studentRepository.deleteById(idLong);
+        }else{
+            throw new IllegalStateException("Id não existente");
+        }
     }
 
 }
