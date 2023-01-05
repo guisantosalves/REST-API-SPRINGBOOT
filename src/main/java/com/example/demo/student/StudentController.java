@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,7 @@ public class StudentController {
     private final StudentService studentService;
 
     @Autowired // it will auto instace the studantService
-    public StudentController(StudentService studentService){
+    public StudentController(StudentService studentService) {
         this.studentService = studentService; // like new studentService
     }
 
@@ -38,9 +39,24 @@ public class StudentController {
 
     // declarate the path - using that path in the PathVariable
     @RequestMapping(path = "{studentId}", method = RequestMethod.DELETE)
-    public void deleteStudent(@PathVariable("studentId") Long id){
+    public void deleteStudent(@PathVariable("studentId") Long id) {
         studentService.deleteStudent(id);
         // System.out.println(id);
     }
 
+    // @PutMapping(path = "{studentId}")
+    // public void updateStudent(@PathVariable("studentId") Long id,
+    //         @RequestParam(required = false) String name,
+    //         @RequestParam(required = false) String email) {
+
+    //     studentService.updateStudent(id, name, email);
+    // }
+
+    @RequestMapping(path = "{studentIdtwo}", method = RequestMethod.PUT)
+    public void updateStudentPerBody(@PathVariable("studentIdtwo") Long id,
+            @RequestBody(required = true) Student student) {
+
+        studentService.updateStudent(id, student.getName(), student.getEmail());
+
+    }
 }
